@@ -23,4 +23,9 @@ export default class World {
     this.lettersShelf.update();
     this.target.update();
   }
+
+  reset() {
+    this.lettersShelf.reset();
+    this.target.reset();
+  }
 }

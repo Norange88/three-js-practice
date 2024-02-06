@@ -1,0 +1,30 @@
+.navigation {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  background-color: #000;
+
+  &__list {
+    display: grid;
+    row-gap: 16px;
+    list-style-type: none;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.2;
+    color: #fff;
+
+    li a {
+      color: inherit;
+      text-decoration: none;
+      transition: all 0.3s ease;
+
+      &:visited {
+        color: inherit;
+      }
+
+      &:hover {
+        color: #ccc;
+      }
+    }
+  }
+}

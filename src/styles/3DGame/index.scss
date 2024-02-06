@@ -1,0 +1,29 @@
+.gameoverPopup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: rgb(23, 167, 172);
+  transition: all 0.3s ease;
+  transform: translateY(-100%);
+
+  &._active {
+    transform: none;
+  }
+
+  &__text {
+    display: inline-block;
+    margin-right: 16px;
+    color: #fff;
+  }
+
+  &__button {
+    padding: 4px;
+    cursor: pointer;
+  }
+}

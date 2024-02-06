@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import * as CANNON from 'cannon-es';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import Experience from '../../../../Experience';
+import { resetCannonBody } from '../../../../../utils/resetCannonBody';
 
 const PARAMS = {
   fontSize: 1,
@@ -11,7 +12,7 @@ const PARAMS = {
 };
 
 export default class Letter {
-  constructor(data, { geometry, material, letter, font, position }) {
+  constructor(data, { geometry, material, letter, font }) {
     this.experience = new Experience();
 
     this.world = this.experience.world;
@@ -27,12 +28,10 @@ export default class Letter {
     this.material = material;
     this.letter = letter;
     this.font = font;
-    this.initialPosition = position;
-    this.isTargetHit = false;
-    this.isMiss = false;
-    this.transform = {
-      scale: 1,
-    };
+    this.initialPosition = new THREE.Vector3();
+    this.initialQuaternion = new THREE.Vector4();
+    this.targetHit = false;
+    this.targetMiss = false;
 
     this.raycaster = new THREE.Raycaster();
 
@@ -104,9 +103,16 @@ export default class Letter {
       Math.abs(this.geometry.boundingBox.max.y);
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.position.copy(this.initialPosition);
     this.mesh.castShadow = true;
     this.instance.mesh = this.mesh;
+  }
+
+  applyInitialPosition(position) {
+    if (position) {
+      this.initialPosition = position;
+    }
+    this.instance.mesh.position.copy(this.initialPosition);
+    this.resetBody();
   }
 
   createPhysicalBody() {
@@ -131,17 +137,8 @@ export default class Letter {
     this.instance.body = body;
   }
 
-  resetBody() {
-    this.body.position.copy(this.mesh.position);
-  }
-
   onTargetHit() {
     this.targetHit = true;
-    gsap.to(this.transform, {
-      scale: 0,
-      duration: 1,
-      onComplete: this.destroy.bind(this),
-    });
     this.score.addHit();
   }
 
@@ -153,12 +150,12 @@ export default class Letter {
     const hitX = Math.abs(targetPos.x - letterPos.x) < targetRadius;
     const hitZ = Math.abs(targetPos.z - letterPos.z) < targetRadius;
     const diffY = targetPos.y - letterPos.y;
-    const hitY = diffY > 0 && diffY < 0.15;
+    const hitY = diffY > 0 && diffY < 0.3;
 
     if (hitY && (!hitX || !hitZ)) {
-      this.isMiss = true;
+      this.targetMiss = true;
     } else if (hitY && hitX && hitZ) {
-      this.isTargetHit = true;
+      this.targetHit = true;
     }
 
     return hitX && hitY && hitZ;
@@ -168,9 +165,15 @@ export default class Letter {
     this.score.addMiss();
   }
 
-  destroy() {
-    this.scene.remove(this.instance.mesh);
-    this.world.physics.instance.removeBody(this.instance.body);
+  reset() {
+    this.targetHit = false;
+    this.targetMiss = false;
+    this.applyInitialPosition();
+  }
+
+  resetBody() {
+    this.instance.body &&
+      resetCannonBody(this.instance.body, this.initialPosition);
   }
 
   update() {
@@ -179,18 +182,15 @@ export default class Letter {
     this.instance.mesh.position.copy(this.instance.body.position);
     this.instance.mesh.quaternion.copy(this.instance.body.quaternion);
 
-    const { scale } = this.transform;
-    this.instance.mesh.scale.set(scale, scale, scale);
-
-    if (this.isTargetHit || this.isMiss) return;
+    if (this.targetHit || this.targetMiss) return;
 
     this.checkTargetCollision();
 
-    if (this.isTargetHit) {
+    if (this.targetHit) {
       this.onTargetHit();
     }
 
-    if (this.isMiss) {
+    if (this.targetMiss) {
       this.onTargetMiss();
     }
   }

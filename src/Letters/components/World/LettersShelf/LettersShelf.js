@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-import Letters from "./Letters/Letters";
+import Letters from './Letters/Letters';
 import Shelf from './Shelf';
-import Experience from "../../../Experience";
+import Experience from '../../../Experience';
 
 export const shelfParams = {
   initialPosition: new THREE.Vector3(0, 5, 0),
   shelfDimensions: {
     thickness: 1,
     height: 0.2,
-    width: 10
-  }
+    width: 10,
+  },
 };
 
 export default class LettersShelf {
@@ -34,5 +34,9 @@ export default class LettersShelf {
 
   update() {
     this.letters.update();
+  }
+
+  reset() {
+    this.letters.reset();
   }
 }

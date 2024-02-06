@@ -137,18 +137,19 @@ export default class Target {
     });
   }
 
+  reset() {
+    this.createScore();
+  }
+
   update() {
-    this.instance.targetMesh.position.x =
-      Math.sin(this.time.elapsed * 0.001) * 4;
-    this.instance.borderMesh.position.x =
-      Math.sin(this.time.elapsed * 0.001) * 4;
+    const newCenterX = Math.sin(this.time.elapsed * 0.001) * 4;
+
+    this.instance.targetMesh.position.x = newCenterX;
+    this.instance.borderMesh.position.x = newCenterX;
     this.borderSegments.forEach((segment) => {
-      segment.position.x =
-        Math.sin(this.time.elapsed * 0.001) * 4 +
-        segment.distanceFromTargetCenter.x;
+      segment.position.x = newCenterX + segment.distanceFromTargetCenter.x;
     });
     this.instance.scoreMesh &&
-      (this.instance.scoreMesh.position.x =
-        Math.sin(this.time.elapsed * 0.001) * 4);
+      (this.instance.scoreMesh.position.x = newCenterX);
   }
 }

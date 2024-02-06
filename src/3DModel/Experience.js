@@ -1,14 +1,11 @@
 import * as THREE from 'three';
 
-import { phrase } from './components/World/LettersShelf/Letters/Letters';
-
 import Sizes from '../utils/Sizes';
 import Camera from './Camera';
 import Renderer from './Renderer';
 import Time from '../utils/Time';
-import Cursor from '../utils/Cursor';
-import Score from './Score';
 import World from './components/World/World';
+import Preloader from './Preloader';
 
 let instance = null;
 
@@ -19,22 +16,18 @@ export default class Experience {
     }
 
     instance = this;
-    this.isDebug = location.hash === '#debug';
 
     this.canvas = canvas;
     this.scene = new THREE.Scene();
     this.sizes = new Sizes();
-    this.time = new Time();
-    this.cursor = new Cursor(this.sizes);
-    this.score = new Score({
-      winScore: phrase.length,
-    });
     this.camera = new Camera();
     this.renderer = new Renderer();
+    this.time = new Time();
+    this.preloader = new Preloader();
     this.world = new World();
 
-    this.world.create();
     this.bindEvents();
+    this.world.load();
   }
 
   bindEvents() {
@@ -51,10 +44,5 @@ export default class Experience {
     this.camera.update();
     this.world.update();
     this.renderer.update();
-  }
-
-  reset() {
-    this.score.reset();
-    this.world.reset();
   }
 }

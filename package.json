@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "vercel --prod"
   },
   "devDependencies": {
+    "sass": "^1.70.0",
+    "vercel": "^33.4.1",
     "vite": "^4.3.9"
   },
   "dependencies": {
