@@ -13,10 +13,13 @@ export default {
     outDir: '../dist',
     emptyOutDir: true,
     sourcemap: true,
-    // rollupOptions: {
-    //   input: {
-    //     main: './src/index.html',
-    //   },
-    // },
+    rollupOptions: {
+      input: {
+        main: './src/index.html',
+        letters: './src/3d-letters-game.html',
+        model: './src/3d-model.html',
+        portfolio: './src/3d-portfolio.html',
+      },
+    },
   },
 };
